@@ -50,7 +50,7 @@ class _QuizDetailsViewState extends State<QuizDetailsView> {
                   padding: const EdgeInsets.only(right: 12.0),
                   decoration: const BoxDecoration(
                       border: Border(right: BorderSide(width: 0.7))),
-                  child: Text(_dataServices.doctorUser.value.rotationYear!),
+                  child: Text(_dataServices.currentUser.value.rotationYear!),
                 ),
                 title: Text(
                   _dataServices.quizParticipants[index].name!,

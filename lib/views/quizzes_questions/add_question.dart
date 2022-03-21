@@ -202,7 +202,7 @@ class _AddQuestionState extends State<AddQuestion> {
       if (question.choices!.isEmpty) {
         return;
       }
-      question.creator = _dataServices.doctorUser.value.name;
+      question.creator = _dataServices.currentUser.value.name;
       question.question = questionController.text;
       question.creationDate = selectedDate;
       _dataServices.addQuestion(question).whenComplete(() => Get.back());

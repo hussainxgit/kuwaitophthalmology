@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import '/models/doctor_user.dart';
+import 'package:kuwaitophthalmology/widgets/custom_app_bar.dart';
 
+import '/models/doctor_user.dart';
 import 'all_operative_logs_view.dart';
 
 class UserView extends StatelessWidget {
   final DoctorUser user;
+
   const UserView({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.black87,),
+      appBar: AppBar(
+        backgroundColor: Colors.black87,
+      ),
       body: ListView(
         children: [
           const SizedBox(
@@ -43,10 +47,10 @@ class UserView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: Column(
-                  children:  [
+                  children: [
                     ListTile(
-                      onTap: (){
-                        Get.to(()=> AllOperativeLogsView(userEmail: user.email!));
+                      onTap: () {
+                        Get.to(() => UserViewOperationsList(user: user));
                       },
                       leading: const Icon(Icons.book_outlined),
                       title: const Text('Operative logs'),
@@ -64,6 +68,20 @@ class UserView extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class UserViewOperationsList extends StatelessWidget {
+  final DoctorUser user;
+  const UserViewOperationsList({Key? key, required this.user})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar(),
+      body: AllOperativeLogsView(userEmail: user.email!),
     );
   }
 }

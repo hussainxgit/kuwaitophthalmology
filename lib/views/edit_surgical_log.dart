@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
+
 import '/models/operation.dart';
 import '/services/api_services.dart';
 import '/services/data_services.dart';
+import '/views/home_view.dart';
 import '/widgets/custom_app_bar.dart';
 
 class EditSurgicalLog extends StatefulWidget {
@@ -19,7 +21,6 @@ class EditSurgicalLog extends StatefulWidget {
 class _EditSurgicalLogState extends State<EditSurgicalLog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final DataServices _dataServices = Get.find();
-  final ApiServices _apiServices = ApiServices();
   DateTime selectedDate = DateTime.now();
   TextEditingController dateCtl = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -50,8 +51,8 @@ class _EditSurgicalLogState extends State<EditSurgicalLog> {
             tooltip: 'Edit',
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                _apiServices
-                    .editOperationLog(Operation(
+                _dataServices
+                    .editOperation(Operation(
                         uid: widget.operation.uid,
                         patientName: nameController.value.text,
                         patientFileNumber: fileNumberController.value.text,
@@ -62,9 +63,8 @@ class _EditSurgicalLogState extends State<EditSurgicalLog> {
                         postOpRightEye: postOpRtController.value.text,
                         complications: complicationsController.value.text,
                         operationDate: selectedDate,
-                        doctorUser: _dataServices.doctorUser.value))
-                    .whenComplete(() => _dataServices.initAppMainData())
-                    .whenComplete(() => Get.back());
+                        doctorUser: _dataServices.currentUser.value))
+                    .whenComplete(() => Get.to(() => const HomeView()));
               }
             },
           ),

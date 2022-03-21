@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:kuwaitophthalmology/views/home_view.dart';
 
-import '/models/doctor_user.dart';
 import '/models/operation.dart';
-import '/services/api_services.dart';
 import '/services/data_services.dart';
 import '/widgets/custom_app_bar.dart';
 
@@ -29,7 +28,6 @@ class _AddSurgicalLogState extends State<AddSurgicalLog> {
   TextEditingController complicationsController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   final DataServices _dataServices = Get.find();
-  final ApiServices _apiServices = ApiServices();
 
   Future<DateTime?> showDate(BuildContext context) async {
     return await showDatePicker(
@@ -50,25 +48,19 @@ class _AddSurgicalLogState extends State<AddSurgicalLog> {
             tooltip: 'Send',
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                Operation operation = Operation(
-                    patientName: nameController.value.text,
-                    patientFileNumber: fileNumberController.value.text,
-                    procedure: procedureController.value.text,
-                    leftEye: leftEyeController.value.text,
-                    rightEye: rightEyeController.value.text,
-                    postOpLeftEye: postOpLtController.value.text,
-                    postOpRightEye: postOpRtController.value.text,
-                    complications: complicationsController.value.text,
-                    operationDate: selectedDate,
-                    doctorUser: DoctorUser(
-                        name: 'Hussain SK',
-                        email: 'robinx5.q8@gmail.com',
-                        phone: '62228494'));
-                _apiServices
-                    .addOperationLog(operation)
-                    .whenComplete(
-                        () => _dataServices.doctorOperations.add(operation))
-                    .whenComplete(() => Get.back());
+                _dataServices
+                    .addOperation(Operation(
+                        patientName: nameController.value.text,
+                        patientFileNumber: fileNumberController.value.text,
+                        procedure: procedureController.value.text,
+                        leftEye: leftEyeController.value.text,
+                        rightEye: rightEyeController.value.text,
+                        postOpLeftEye: postOpLtController.value.text,
+                        postOpRightEye: postOpRtController.value.text,
+                        complications: complicationsController.value.text,
+                        operationDate: selectedDate,
+                        doctorUser: _dataServices.currentUser.value))
+                    .whenComplete(() => Get.to(() => const HomeView()));
               }
             },
           ),

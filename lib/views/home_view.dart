@@ -10,7 +10,6 @@ import '/views/quizzes_questions/all_quizzes_view.dart';
 import '/widgets/custom_app_bar.dart';
 import '/widgets/operative_log_header.dart';
 import '/widgets/recently_operative_logs_list.dart';
-
 import 'add_surgical_log.dart';
 import 'all_operative_logs_view.dart';
 
@@ -39,7 +38,7 @@ class _HomeViewState extends State<HomeView> {
           Get.to(() => const AddQuestion());
         },
       ),
-      _dataServices.doctorUser.value.containsRole('admin')
+      _dataServices.currentUser.value.containsRole('admin')
           ? IconButton(
               icon: const Icon(Icons.create),
               tooltip: 'Create Quiz',
@@ -80,9 +79,9 @@ class _HomeViewState extends State<HomeView> {
                     backgroundImage: AssetImage(
                         'graphics/user_avatar.png'),
                   ),
-                  accountEmail: Text(_dataServices.doctorUser.value.email!),
+                  accountEmail: Text(_dataServices.currentUser.value.email!),
                   accountName: Text(
-                    _dataServices.doctorUser.value.name!.toUpperCase(),
+                    _dataServices.currentUser.value.name!.toUpperCase(),
                     style: const TextStyle(fontSize: 24.0),
                   ),
                   decoration: const BoxDecoration(
@@ -117,7 +116,7 @@ class _HomeViewState extends State<HomeView> {
                     });
                   },
                 ),
-                _dataServices.doctorUser.value.containsRole('admin')
+                _dataServices.currentUser.value.containsRole('admin')
                     ? ListTile(
                         leading: const Icon(Icons.book),
                         title: const Text('Questions'),
@@ -147,7 +146,7 @@ class _HomeViewState extends State<HomeView> {
                     });
                   },
                 ),
-                _dataServices.doctorUser.value.containsRole('admin')
+                _dataServices.currentUser.value.containsRole('admin')
                     ? ListTile(
                         leading: const Icon(Icons.book),
                         title: const Text("All users"),
@@ -234,7 +233,7 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             AllOperativeLogsView(
-              userEmail: _dataServices.doctorUser.value.email!,
+              userEmail: _dataServices.currentUser.value.email!,
             ),
             AllQuestionsView(),
             QuizzesListViewController(),

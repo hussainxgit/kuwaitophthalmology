@@ -1,5 +1,6 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
 import '/models/data_response.dart';
 import '/models/doctor_user.dart';
 import '/models/operation.dart';
@@ -8,10 +9,10 @@ import '/services/api_services.dart';
 
 class DataServices extends GetxController {
   final ApiServices _apiServices = ApiServices();
-  Rx<DoctorUser> doctorUser = DoctorUser().obs;
+  Rx<DoctorUser> currentUser = DoctorUser().obs;
   Rx<bool> isLogged = false.obs;
   RxList<Quiz> allQuizzes = <Quiz>[].obs;
-  RxList<Operation> doctorOperations = <Operation>[].obs;
+  RxList<Operation> currentUserAllOperations = <Operation>[].obs;
   RxList<Question> allQuestion = <Question>[].obs;
   RxList<Question> quizQuestions = <Question>[].obs;
   RxList<DoctorUser> quizParticipants = <DoctorUser>[].obs;
@@ -21,13 +22,13 @@ class DataServices extends GetxController {
   DataServices();
 
   Future<RxList<Operation>> getOperationsLogsByEmail(String userEmail) async {
-    doctorOperations
+    currentUserAllOperations
         .assignAll(await _apiServices.getOperationsLogsByEmail(userEmail));
-    doctorOperations.sort((a, b) {
+    currentUserAllOperations.sort((a, b) {
       return b.operationDate!.compareTo(a.operationDate!);
     });
-    doctorOperations.refresh();
-    return doctorOperations;
+    currentUserAllOperations.refresh();
+    return currentUserAllOperations;
   }
 
   Future<List<Question>> getQuizQuestions(Quiz quiz) async {
@@ -67,21 +68,21 @@ class DataServices extends GetxController {
   initAppMainData() async {
     await isUserSignedIn().then((value) {
       if (value == true) {
-        if (doctorUser.value.containsRole('admin')) {
+        if (currentUser.value.containsRole('admin')) {
           getAllQuestions();
           getAllQuizzes();
           getAllUsers();
-        } else if (doctorUser.value.containsRole('resident') &&
-            doctorUser.value.containsRole('admin') != true) {
-          getResidentsUncompletedQuizzes(doctorUser.value);
+        } else if (currentUser.value.containsRole('resident') &&
+            currentUser.value.containsRole('admin') != true) {
+          getResidentsUncompletedQuizzes(currentUser.value);
         }
-          getOperationsLogsByEmail(doctorUser.value.email!);
+        getOperationsLogsByEmail(currentUser.value.email!);
       }
     });
   }
 
   int getCurrentMonthLogs({required int monthInt}) {
-    return doctorOperations
+    return currentUserAllOperations
         .where((o) => o.operationDate!.month == monthInt)
         .toList()
         .length;
@@ -90,10 +91,10 @@ class DataServices extends GetxController {
   Future<DataResponse> signInUser(String email, password) async {
     DataResponse response = await _apiServices.signInUser(email, password);
     if (response.onSuccess) {
-      doctorUser.value = response.object as DoctorUser;
+      currentUser.value = response.object as DoctorUser;
       isLogged.value = true;
       isLogged.refresh();
-      doctorUser.refresh();
+      currentUser.refresh();
       initAppMainData();
     }
     return response;
@@ -105,7 +106,7 @@ class DataServices extends GetxController {
 
   Future logoutUser() async {
     _apiServices.logout();
-    doctorUser.value.clear();
+    currentUser.value.clear();
     isLogged.value = false;
   }
 
@@ -157,8 +158,7 @@ class DataServices extends GetxController {
       for (var e in quizResults) {
         if (e.doctorUid == quizParticipants[i].uid) {
           quizParticipants[i].quizResult = e;
-        } else {
-        }
+        } else {}
       }
     }
     quizResults.refresh();
@@ -172,13 +172,27 @@ class DataServices extends GetxController {
   Future<bool> isUserSignedIn() async {
     return await _apiServices.isUserLoggedIn().then((value) async {
       if (value != null) {
-        doctorUser.value = (await _apiServices.isUserLoggedIn())!;
+        currentUser.value = (await _apiServices.isUserLoggedIn())!;
         isLogged.value = true;
         isLogged.refresh();
-        doctorUser.refresh();
+        currentUser.refresh();
         return true;
       }
       return false;
     });
+  }
+
+  Future<void> addOperation(Operation operation) async {
+    await _apiServices
+        .addOperationLog(operation)
+        .whenComplete(() => currentUserAllOperations.add(operation));
+    currentUserAllOperations.refresh();
+  }
+
+  Future<void> editOperation(Operation operation) async {
+    await _apiServices
+        .editOperationLog(operation)
+        .whenComplete(() => getOperationsLogsByEmail(currentUser.value.email!));
+    currentUserAllOperations.refresh();
   }
 }

@@ -136,7 +136,7 @@ class _QuizViewState extends State<QuizView> {
     }
     _apiServices
         .addQuizResult(QuizResult(
-            doctorUid: _dataServices.doctorUser.value.uid,
+            doctorUid: _dataServices.currentUser.value.uid,
             quizUid: widget.quiz.uid,
             duration: quizDurationResult,
             score: score,

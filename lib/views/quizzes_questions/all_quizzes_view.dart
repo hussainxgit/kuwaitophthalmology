@@ -14,7 +14,7 @@ class QuizzesListViewController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _dataServices.doctorUser.value.containsRole('admin')
+    return _dataServices.currentUser.value.containsRole('admin')
         ? AdminQuizzesListView()
         : const ResidentQuizzesListView();
   }

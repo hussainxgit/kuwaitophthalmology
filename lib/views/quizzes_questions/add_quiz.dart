@@ -69,7 +69,7 @@ class _AddQuizState extends State<AddQuiz> {
                 quiz.questions = quiz.questions;
                 quiz.duration = durationInSeconds.round();
                 quiz.creationDate = DateTime.now();
-                quiz.creator = _dataServices.doctorUser.value.name;
+                quiz.creator = _dataServices.currentUser.value.name;
                 _dataServices.createQuiz(quiz).whenComplete(() => Get.back());
               }
             },

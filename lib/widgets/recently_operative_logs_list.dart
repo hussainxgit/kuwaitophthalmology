@@ -5,7 +5,6 @@ import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import '/models/operation.dart';
 import '/services/data_services.dart';
-
 import '../views/edit_surgical_log.dart';
 
 class RecentlyOperativeLogsList extends StatelessWidget {
@@ -16,11 +15,11 @@ class RecentlyOperativeLogsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() => ListView.builder(
           shrinkWrap: true,
-          itemCount: _dataServices.doctorOperations.length > 7
+          itemCount: _dataServices.currentUserAllOperations.length > 7
               ? 7
-              : _dataServices.doctorOperations.length,
+              : _dataServices.currentUserAllOperations.length,
           itemBuilder: (BuildContext context, int index) {
-            Operation operation = _dataServices.doctorOperations[index];
+            Operation operation = _dataServices.currentUserAllOperations[index];
             return ListTile(
               leading: Container(
                 padding: const EdgeInsets.only(right: 12.0),

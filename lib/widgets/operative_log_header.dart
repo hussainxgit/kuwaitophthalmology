@@ -31,7 +31,7 @@ class OperativeLogHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Obx(() => Text(
-                  _dataServices.doctorOperations.length.toString(),
+                  _dataServices.currentUserAllOperations.length.toString(),
                   style: Theme.of(context).textTheme.headline1,
                 )),
             Image.asset(
@@ -52,7 +52,7 @@ class OperativeLogHeader extends StatelessWidget {
                   width: 8.0,
                 ),
                 Obx(() => Text(
-                      _dataServices.doctorOperations.length.toString() +
+                      _dataServices.currentUserAllOperations.length.toString() +
                           ' successful',
                       style: Theme.of(context).textTheme.subtitle2,
                     )),
