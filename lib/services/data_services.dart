@@ -1,5 +1,6 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:kuwaitophthalmology/models/leave.dart';
 
 import '/models/data_response.dart';
 import '/models/doctor_user.dart';
@@ -18,6 +19,7 @@ class DataServices extends GetxController {
   RxList<DoctorUser> quizParticipants = <DoctorUser>[].obs;
   RxList<QuizResult> quizResults = <QuizResult>[].obs;
   RxList<DoctorUser> allUsers = <DoctorUser>[].obs;
+  RxList<Leave> allLeaves = <Leave>[].obs;
 
   DataServices();
 
@@ -77,6 +79,7 @@ class DataServices extends GetxController {
           getResidentsUncompletedQuizzes(currentUser.value);
         }
         getOperationsLogsByEmail(currentUser.value.email!);
+        getAllLeaves();
       }
     });
   }
@@ -169,6 +172,10 @@ class DataServices extends GetxController {
     allUsers.value = await _apiServices.getAllUsers();
   }
 
+  Future<void> getAllLeaves() async {
+    allLeaves.value = await _apiServices.getAllLeaves();
+  }
+
   Future<bool> isUserSignedIn() async {
     return await _apiServices.isUserLoggedIn().then((value) async {
       if (value != null) {
@@ -194,5 +201,10 @@ class DataServices extends GetxController {
         .editOperationLog(operation)
         .whenComplete(() => getOperationsLogsByEmail(currentUser.value.email!));
     currentUserAllOperations.refresh();
+  }
+
+  Future<void> createLeave(Leave leave) async {
+    await _apiServices.createLeave(leave);
+    allLeaves.refresh();
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/instance_manager.dart';
+import 'package:kuwaitophthalmology/views/leave_section/all_leaves_view.dart';
+import 'package:kuwaitophthalmology/views/leave_section/create_leave.dart';
 import '/services/data_services.dart';
 import '/views/all_users_view.dart';
 import '/views/quizzes_questions/add_question.dart';
@@ -10,8 +12,8 @@ import '/views/quizzes_questions/all_quizzes_view.dart';
 import '/widgets/custom_app_bar.dart';
 import '/widgets/operative_log_header.dart';
 import '/widgets/recently_operative_logs_list.dart';
-import 'add_surgical_log.dart';
-import 'all_operative_logs_view.dart';
+import 'operation_logs/add_surgical_log.dart';
+import 'operation_logs/all_operative_logs_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -48,6 +50,13 @@ class _HomeViewState extends State<HomeView> {
             )
           : const SizedBox(),
       const SizedBox(),
+      IconButton(
+        icon: const Icon(Icons.add),
+        tooltip: 'Create leave',
+        onPressed: () {
+          Get.to(() => const CreateLeave());
+        },
+      ),
     ];
   }
 
@@ -162,6 +171,21 @@ class _HomeViewState extends State<HomeView> {
                         },
                       )
                     : const SizedBox(),
+                ListTile(
+                  leading: const Icon(Icons.book),
+                  title: const Text('Leaves section'),
+                  selected: _selectedDestination == 5,
+                  onTap: () {
+                    selectDestination(5);
+                    Navigator.pop(context);
+                    Future.delayed(const Duration(milliseconds: 400), () {
+                      setState(() {
+                        _pageController.jumpToPage(5);
+                      });
+                    });
+                  },
+                ),
+                const SizedBox(),
                 const Divider(
                   height: 1,
                   thickness: 1,
@@ -237,7 +261,8 @@ class _HomeViewState extends State<HomeView> {
             ),
             AllQuestionsView(),
             QuizzesListViewController(),
-            const AllUsersView()
+            const AllUsersView(),
+            const AllLeavesView()
           ],
         ),
       ),

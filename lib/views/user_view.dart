@@ -3,7 +3,7 @@ import 'package:get/route_manager.dart';
 import 'package:kuwaitophthalmology/widgets/custom_app_bar.dart';
 
 import '/models/doctor_user.dart';
-import 'all_operative_logs_view.dart';
+import 'operation_logs/all_operative_logs_view.dart';
 
 class UserView extends StatelessWidget {
   final DoctorUser user;

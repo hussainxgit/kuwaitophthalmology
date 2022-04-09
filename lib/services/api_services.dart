@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+
 import '/models/data_response.dart';
 import '/models/doctor_user.dart';
 import '/models/lecture.dart';
 import '/models/operation.dart';
 import '/models/quiz.dart';
 import '/models/resident.dart';
+import '../models/leave.dart';
 
 class ApiServices {
   final CollectionReference _operationsLogCollection =
@@ -29,6 +31,9 @@ class ApiServices {
 
   final CollectionReference _lecturesCollection =
       FirebaseFirestore.instance.collection('lectures');
+
+  final CollectionReference _leavesCollection =
+      FirebaseFirestore.instance.collection('leaves');
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -357,5 +362,43 @@ class ApiServices {
         .doc(lecture.id)
         .delete()
         .then((value) => true);
+  }
+
+  Future createLeave(Leave leave) async {
+    return await _leavesCollection.doc().set(leave.toMap());
+  }
+
+  Future<List<Leave>> getAllLeaves() async {
+    return await _leavesCollection.get().then((value) => value.docs
+        .map((e) => Leave.fromMap(e.data() as Map<String, dynamic>, e.id))
+        .toList());
+  }
+
+  Future approveLeave(Leave leave, DoctorUser approvalUser, msg) async {
+    return await _leavesCollection.doc(leave.uid).update({
+      'approvals': FieldValue.arrayUnion([
+        {
+          'uid': approvalUser.uid,
+          'state': true,
+          'msg': msg,
+          'approvalLevel': approvalUser.roles!.first,
+          'date': DateTime.now()
+        }
+      ])
+    });
+  }
+
+  Future denyLeave(Leave leave, DoctorUser denierUser, msg) async {
+    return await _leavesCollection.doc(leave.uid).update({
+      'approvals': FieldValue.arrayUnion([
+        {
+          'uid': denierUser.uid,
+          'state': false,
+          'msg': msg,
+          'approvalLevel': denierUser.roles!.first,
+          'date': DateTime.now()
+        }
+      ])
+    });
   }
 }

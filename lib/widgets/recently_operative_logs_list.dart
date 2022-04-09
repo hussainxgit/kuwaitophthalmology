@@ -5,7 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import '/models/operation.dart';
 import '/services/data_services.dart';
-import '../views/edit_surgical_log.dart';
+import '../views/operation_logs/edit_surgical_log.dart';
 
 class RecentlyOperativeLogsList extends StatelessWidget {
   RecentlyOperativeLogsList({Key? key}) : super(key: key);

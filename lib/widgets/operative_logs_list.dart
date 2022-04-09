@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import '/models/operation.dart';
 import '/services/data_services.dart';
-import '/views/edit_surgical_log.dart';
+import '../views/operation_logs/edit_surgical_log.dart';
 
 class OperativeLogsList extends StatefulWidget {
   final String userEmail;
